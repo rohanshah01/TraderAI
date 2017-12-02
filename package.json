@@ -6,6 +6,7 @@
   "dependencies": {
     "botbuilder": "^3.12.0",
     "botbuilder-azure": "^3.0.4",
+    "coinbase": "^2.0.6",
     "restify": "^6.3.4"
   },
   "devDependencies": {},
