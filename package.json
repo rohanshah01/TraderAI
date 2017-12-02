@@ -1,0 +1,17 @@
+{
+  "name": "traderai",
+  "version": "1.0.0",
+  "description": "Stock Trading Chat Bot",
+  "main": "app.js",
+  "dependencies": {
+    "botbuilder": "^3.12.0",
+    "botbuilder-azure": "^3.0.4",
+    "restify": "^6.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
