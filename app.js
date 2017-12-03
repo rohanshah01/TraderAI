@@ -47,6 +47,7 @@ server.post('/api/messages', connector.listen());
 var currency = "";
 var currencySymbol = "";
 var id = "";
+var pay_id = '';
 var recognizer = new builder.LuisRecognizer(LUIS_MODEL_URL);
 bot.recognizer(recognizer);
 
@@ -68,25 +69,47 @@ bot.dialog('buyCrypto', function(session, args){//Buy crypto
   //Get Entities
   var intent = args.intent; console.log(intent);
   currency = ((builder.EntityRecognizer.findEntity(intent.entities, 'Cryptocurrency')).entity).toLowerCase();
-  quantity = ((builder.EntityRecognizer.findEntity(intent.entities, 'quantity')).entity);
+  quantity = parseFloat(((builder.EntityRecognizer.findEntity(intent.entities, 'quantity')).entity)) * (0.001);
+  console.log(quantity);
   if(currency == "bitcoin"){currencySymbol = "BTC";	}
   else if(currency == "ethereum"){currencySymbol = "ETH";}
   else if(currency == "litecoin"){currencySymbol = "LTC"; }
   	client.getPaymentMethods(null, function(err, pms) {
-	  if (pms[0].verified) {
-	  		// client.getAccount('primary', function(err, account) {
-	  		// 	account.buy({'amount' : amount, 'currency': currencySymbol}, function(err, buy) {
-	  		// 		console.log(buy);
-	  		// 	});
-	  		// });
-	  		console.log("yee boi");
-	  }
-	  else
-	  	session.send("Unable to complete sale due to invalidated payment option!");
+  		 client.getAccount(currencySymbol, function(err, account) {
+  		 	account.buy({'amount' : quantity, 
+  						 'currency': currencySymbol,
+  						 'payment_method' : pms[1].id,
+  						 'commit': false}, function(err, tx) {
+  				console.log("/n");
+  		 		console.log(tx);
+  		 		session.endDialog("You have now purchased " + quantity + " of " + currency + ".");
+  		 	});
+
+  		 });
+  		console.log("yee boi");
 	});
 }).triggerAction({ matches: 'buyCrypto'});
 
 
-bot.dialog('sellCrypto', function(session){//Sell Cryto
+bot.dialog('sellCrypto', function(session, args){//Sell Cryto
+	var intent = args.intent; console.log(intent);
+	currency = ((builder.EntityRecognizer.findEntity(intent.entities, 'Cryptocurrency')).entity).toLowerCase();
+	quantity = parseFloat(((builder.EntityRecognizer.findEntity(intent.entities, 'quantity')).entity)) * (0.001);
+	console.log(quantity);
+	if(currency == "bitcoin"){currencySymbol = "BTC";	}
+	else if(currency == "ethereum"){currencySymbol = "ETH";}
+	else if(currency == "litecoin"){currencySymbol = "LTC"; }
+  	client.getPaymentMethods(null, function(err, pms) {
+  		 client.getAccount(currencySymbol, function(err, account) {
+  		 	account.sell({'amount' : quantity, 
+  						 'currency': currencySymbol,
+  						 'commit': false}, function(err, tx) {
+  				console.log("/n");
+  		 		console.log(tx);
+  		 		session.endDialog("You have now sold " + quantity + " of " + currency + ".");
+  		 	});
 
+  		 });
+  		console.log("yee boi");
+	});
 }).triggerAction({ matches: 'sellCrypto'});
