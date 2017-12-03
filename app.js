@@ -78,11 +78,26 @@ bot.dialog('getPrice', function(session, args){ //Get Price of certain stock
 }).triggerAction({ matches: 'getPrice'});
 
 
-bot.dialog('buyCrypto', function(session){//Buy crypto
-	client.getPaymentMethods(function(err, paymentMethods) {
-  		console.log(paymentMethods);
-});
-	session.send("We aer here");
+bot.dialog('buyCrypto', function(session, args){//Buy crypto
+  //Get Entities
+  var intent = args.intent; console.log(intent);
+  currency = ((builder.EntityRecognizer.findEntity(intent.entities, 'Cryptocurrency')).entity).toLowerCase();
+  quantity = ((builder.EntityRecognizer.findEntity(intent.entities, 'quantity')).entity);
+  if(currency == "bitcoin"){currencySymbol = "BTC";	}
+  else if(currency == "ethereum"){currencySymbol = "ETH";	}
+  else if(currency == "litecoin"){currencySymbol = "LTC"; }
+  	client.getPaymentMethods(null, function(err, pms) {
+	  if (pms[0].verified) {
+	  		// client.getAccount('primary', function(err, account) {
+	  		// 	account.buy({'amount' : amount, 'currency': currencySymbol}, function(err, buy) {
+	  		// 		console.log(buy);
+	  		// 	});
+	  		// });
+	  		console.log("yee boi");
+	  }
+	  else
+	  	session.send("Unable to complete sale due to invalidated payment option!");
+	});
 }).triggerAction({ matches: 'buyCrypto'});
 
 
