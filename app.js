@@ -4,8 +4,8 @@ var builder = require('botbuilder');
 var azure = require('botbuilder-azure');
 var Client = require('coinbase').Client; //Coinbase dependency
 var client = new Client({
-  'apiKey': 'HoOPwjQ5gPxmmrCV',
-  'apiSecret': 'krqOA9EaKWsk9FErOPVBx6YavAlnpGby',
+  'apiKey': ,
+  'apiSecret': ,
   'version':'2017-12-02'
 }); //coinbase client creation
 
