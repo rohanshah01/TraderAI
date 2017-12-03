@@ -80,18 +80,16 @@ bot.dialog('buyCrypto', function(session, args){//Buy crypto
   						 'currency': currencySymbol,
   						 'payment_method' : pms[1].id,
   						 'commit': false}, function(err, tx) {
-  				console.log("/n");
   		 		console.log(tx);
   		 		session.endDialog("You have now purchased " + quantity + " of " + currency + ".");
   		 	});
 
   		 });
-  		console.log("yee boi");
 	});
 }).triggerAction({ matches: 'buyCrypto'});
 
 
-bot.dialog('sellCrypto', function(session, args){//Sell Cryto
+bot.dialog('sellCrypto', function(session, args){//Sell Crypto
 	var intent = args.intent; console.log(intent);
 	currency = ((builder.EntityRecognizer.findEntity(intent.entities, 'Cryptocurrency')).entity).toLowerCase();
 	quantity = parseFloat(((builder.EntityRecognizer.findEntity(intent.entities, 'quantity')).entity)) * (0.001);
@@ -104,12 +102,23 @@ bot.dialog('sellCrypto', function(session, args){//Sell Cryto
   		 	account.sell({'amount' : quantity, 
   						 'currency': currencySymbol,
   						 'commit': false}, function(err, tx) {
-  				console.log("/n");
   		 		console.log(tx);
   		 		session.endDialog("You have now sold " + quantity + " of " + currency + ".");
   		 	});
 
   		 });
-  		console.log("yee boi");
 	});
 }).triggerAction({ matches: 'sellCrypto'});
+
+bot.dialog('getAccountInfo', function(session) {
+	client.getAccounts({}, function(err, accounts) {
+		for(var i = 0; i < 4; i++){
+		if (i < 3) {
+			session.send(accounts[i].name + ": " + accounts[i].balance.amount);
+			}
+		else {
+			session.endDialog(accounts[i].name + ": " + accounts[i].balance.amount);
+			}
+		}
+	});
+}).triggerAction({ matches: 'getAccountInfo'});
